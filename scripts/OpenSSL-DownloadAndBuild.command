@@ -21,7 +21,8 @@ MIN_SDK_VERSION="10.0"
 INSTALLDIR="external"
 
 # Architectures to build
-ARCHS="i386 x86_64 armv7 armv7s arm64"
+ARCHS="i386 armv7 armv7s arm64"
+#ARCHS="i386 x86_64 armv7 armv7s arm64"
 
 # Use default SDK version if not set
 if [ -z ${SDK_VERSION} ]; then
@@ -29,10 +30,10 @@ if [ -z ${SDK_VERSION} ]; then
 fi
 
 CORES=`sysctl hw.ncpu | awk '{print $2}'`
-MAKEOPTS="-j $CORES"
+MAKEOPTS="-j ${CORES}"
 # disable parallell builds since openssl build
 # fails sometimes
-MAKEOPTS=""
+#MAKEOPTS=""
 
 DEVELOPER=`xcode-select -print-path`
 if [ ! -d "$DEVELOPER" ]; then
@@ -77,16 +78,16 @@ function buildArch(){
     LOGFILE="BuildLog.darwin-${ARCH}.txt"
     echo -n " Please wait ..."
     if [[ "$OPENSSLVERSION" =~ 1.0.0. ]]; then
-        run ./Configure BSD-generic32 > "${LOGFILE}" 2>&1
+        run ./Configure BSD-generic32
     elif [ "${ARCH}" == "x86_64" ]; then
-        run ./Configure darwin64-x86_64-cc > "${LOGFILE}" 2>&1
+        run ./Configure darwin64-x86_64-cc
     elif [ "${ARCH}" == "i386" ]; then
-        run ./Configure iphoneos-cross no-asm > "${LOGFILE}" 2>&1
+        run ./Configure iphoneos-cross no-asm
     else
-        run ./Configure iphoneos-cross  > "${LOGFILE}" 2>&1
+        run ./Configure iphoneos-cross 
     fi
 
-    run make ${MAKEOPTS} >> ${LOGFILE} 2>&1
+    run make ${MAKEOPTS} 
     echo " Done. Build log saved in ${LOGFILE}"
     run cp libcrypto.a ../../lib/libcrypto_${ARCH}.a
     run cp libssl.a ../../lib/libssl_${ARCH}.a

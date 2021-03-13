@@ -9,8 +9,8 @@
 
 ## Settings
 # openssl version to use
-OPENSSLVERSION="1.0.2q"
-SHA256SUM="5744cfcbcec2b1b48629f7354203bc1e5e9b5466998bbccc5b5fcde3b18eb684"
+OPENSSLVERSION="1.0.2u"
+SHA256SUM="ecd0c6ffb493dd06707d38b14bb4d8c2288bb7033735606569d8f90f89669d16"
 # SDK version to use - if not set latest version found is used
 SDK_VERSION=""
 
@@ -21,8 +21,9 @@ MIN_SDK_VERSION="10.0"
 INSTALLDIR="external"
 
 # Architectures to build
-ARCHS="i386 armv7 armv7s arm64"
-#ARCHS="i386 x86_64 armv7 armv7s arm64"
+#ARCHS="x86_64"
+#ARCHS="i386 armv7 armv7s arm64"
+ARCHS="i386 x86_64 armv7 armv7s arm64"
 
 # Use default SDK version if not set
 if [ -z ${SDK_VERSION} ]; then
@@ -73,6 +74,14 @@ function buildArch(){
     if [ ! -z $MIN_SDK_VERSION ]; then
         run export CC="$CC -miphoneos-version-min=${MIN_SDK_VERSION}"
     fi
+
+    if [[ "${ARCH}" == "x86_64" ]];
+    then
+        run export CC="cc"
+        echo "use x86_64 arch xcode12 gcc not support change to Normal cc"
+    fi
+
+
     echo "Building openssl-${OPENSSLVERSION} for ${PLATFORM} ${SDK_VERSION} ${ARCH} (min SDK set: ${MIN_SDK_VERSION:-"none"})"
 
     LOGFILE="BuildLog.darwin-${ARCH}.txt"

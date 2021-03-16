@@ -96,6 +96,14 @@ function buildArch(){
         run ./Configure iphoneos-cross 
     fi
 
+    #  masterj edit   x86_64 Patching Makefile
+    if [[ "${ARCH}" == "x86_64" ]];
+    then
+        echo "  Patching Makefile..."
+        sed -ie "s!^CFLAG=!CFLAG=-isysroot ${CROSS_TOP}/SDKs/${CROSS_SDK} !" "Makefile"
+    fi
+
+
     run make ${MAKEOPTS} 
     echo " Done. Build log saved in ${LOGFILE}"
     run cp libcrypto.a ../../lib/libcrypto_${ARCH}.a
